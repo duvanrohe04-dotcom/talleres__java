@@ -2,7 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Singleton.java to edit this template
  */
+<<<<<<< Updated upstream
 // controlador/AutoControlador.java
+=======
+>>>>>>> Stashed changes
 package modelo;
 
 import java.sql.Connection;
