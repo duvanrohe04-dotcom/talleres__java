@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -20,7 +21,7 @@ public class FRMMotos extends JInternalFrame {
     private javax.swing.JButton btnGuardar, btnEditar, btnEliminar, btnLimpiar, BTNCerrar;
     private JScrollPane scrollPane;
     private JTable TBLMotos;
-    private SENALogo logoSena;
+    private MBLogo logoTaller;
 
     public FRMMotos() {
         initComponents();
@@ -33,20 +34,21 @@ public class FRMMotos extends JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setSize(720, 480);
+        setSize(740, 500);
         getContentPane().setLayout(null);
         getContentPane().setBackground(DARK_BG);
 
-        logoSena = new SENALogo(24, true);
-        logoSena.setBounds(15, 10, 24, 24);
+        logoTaller = new MBLogo(22, true);
+        logoTaller.setBounds(15, 10, 22, 22);
 
-        lblTitulo = new JLabel("MOTOS REGISTRADAS", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitulo.setForeground(GOLD);
-        lblTitulo.setBounds(0, 8, 720, 35);
+        JPanel header = crearHeaderBar("MOTOS REGISTRADAS", logoTaller, 740);
+        getContentPane().add(header);
 
-        int lblW = 80, txtW = 180, lblX1 = 25, txtX1 = 105, lblX2 = 315, txtX2 = 395;
-        int row1Y = 55, row2Y = 95, row3Y = 135;
+        JPanel panelForm = crearPanelCard(15, 50, 710, 140);
+        panelForm.setLayout(null);
+
+        int lblW = 80, txtW = 180, lblX1 = 15, txtX1 = 95, lblX2 = 325, txtX2 = 405;
+        int row1Y = 12, row2Y = 52, row3Y = 92;
         int bigTxtW = 280;
 
         lblMarca = crearLabel("Marca:", lblX1, row1Y, lblW);
@@ -62,48 +64,54 @@ public class FRMMotos extends JInternalFrame {
         lblCliente = crearLabel("Cliente:", lblX1, row3Y, 90);
         txtCliente = crearCampoTexto(txtX1, row3Y, bigTxtW);
 
-        int btnY = 170, btnW = 105, btnH = 32;
-        btnGuardar = crearBotonRedondeado("GUARDAR", SENA_GREEN, 25, btnY, btnW, btnH);
-        btnEditar = crearBotonRedondeado("EDITAR", GOLD_DARK, 140, btnY, btnW, btnH);
-        btnEliminar = crearBotonRedondeado("ELIMINAR", new Color(200, 50, 50), 255, btnY, btnW, btnH);
-        btnLimpiar = crearBotonRedondeado("LIMPIAR", new Color(100, 100, 100), 370, btnY, btnW, btnH);
-        BTNCerrar = crearBotonRedondeado("CERRAR", new Color(70, 70, 70), 590, btnY, btnW, btnH);
+        panelForm.add(lblMarca); panelForm.add(txtMarca);
+        panelForm.add(lblModelo); panelForm.add(txtModelo);
+        panelForm.add(lblPlaca); panelForm.add(txtPlaca);
+        panelForm.add(lblColor); panelForm.add(txtColor);
+        panelForm.add(lblCliente); panelForm.add(txtCliente);
+        getContentPane().add(panelForm);
+
+        JPanel panelBotones = crearPanelCard(15, 198, 710, 50);
+        panelBotones.setLayout(null);
+
+        int btnY = 9, btnW = 105, btnH = 32;
+        btnGuardar = crearBotonRedondeado("GUARDAR", RED_PRIMARY, 15, btnY, btnW, btnH);
+        btnEditar = crearBotonRedondeado("EDITAR", RED_DARK, 130, btnY, btnW, btnH);
+        btnEliminar = crearBotonRedondeado("ELIMINAR", new Color(180, 15, 15), 245, btnY, btnW, btnH);
+        btnLimpiar = crearBotonRedondeado("LIMPIAR", new Color(70, 70, 70), 360, btnY, btnW, btnH);
+        BTNCerrar = crearBotonRedondeado("CERRAR", new Color(45, 45, 45), 590, btnY, btnW, btnH);
         BTNCerrar.addActionListener(e -> dispose());
         btnLimpiar.addActionListener(e -> limpiarCampos());
 
+        panelBotones.add(btnGuardar); panelBotones.add(btnEditar);
+        panelBotones.add(btnEliminar); panelBotones.add(btnLimpiar);
+        panelBotones.add(BTNCerrar);
+        getContentPane().add(panelBotones);
+
         TBLMotos = new JTable();
         TBLMotos.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        TBLMotos.setRowHeight(30);
-        TBLMotos.setBackground(new Color(42, 42, 42));
+        TBLMotos.setRowHeight(32);
+        TBLMotos.setBackground(DARK_BG);
         TBLMotos.setForeground(Color.WHITE);
-        TBLMotos.setGridColor(new Color(70, 70, 70));
-        TBLMotos.setSelectionBackground(new Color(57, 169, 0, 180));
+        TBLMotos.setGridColor(TABLE_GRID);
+        TBLMotos.setSelectionBackground(TABLE_SELECTION);
         TBLMotos.setSelectionForeground(Color.WHITE);
 
-        JTableHeader header = TBLMotos.getTableHeader();
-        header.setBackground(GOLD);
-        header.setForeground(Color.BLACK);
-        header.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        JTableHeader headerTable = TBLMotos.getTableHeader();
+        headerTable.setBackground(TABLE_HEADER_BG);
+        headerTable.setForeground(TABLE_HEADER_FG);
+        headerTable.setFont(new Font("Segoe UI", Font.BOLD, 13));
 
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         center.setHorizontalAlignment(SwingConstants.CENTER);
         TBLMotos.setDefaultRenderer(Object.class, center);
 
         scrollPane = new JScrollPane(TBLMotos);
-        scrollPane.setBounds(20, 215, 680, 225);
-        scrollPane.getViewport().setBackground(new Color(42, 42, 42));
+        scrollPane.setBounds(15, 258, 710, 210);
+        scrollPane.getViewport().setBackground(DARK_BG);
         scrollPane.getViewport().setOpaque(true);
+        scrollPane.setBorder(null);
 
-        getContentPane().add(logoSena);
-        getContentPane().add(lblTitulo);
-        getContentPane().add(lblMarca); getContentPane().add(txtMarca);
-        getContentPane().add(lblModelo); getContentPane().add(txtModelo);
-        getContentPane().add(lblPlaca); getContentPane().add(txtPlaca);
-        getContentPane().add(lblColor); getContentPane().add(txtColor);
-        getContentPane().add(lblCliente); getContentPane().add(txtCliente);
-        getContentPane().add(btnGuardar); getContentPane().add(btnEditar);
-        getContentPane().add(btnEliminar); getContentPane().add(btnLimpiar);
-        getContentPane().add(BTNCerrar);
         getContentPane().add(scrollPane);
     }
 

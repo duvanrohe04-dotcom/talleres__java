@@ -3,8 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/Users/ASUS/OneDrive/Documentos/NetBeansProjects/talleres__java/src/modelo/BaseDB.java</file>
             <file>file:/C:/Users/ASUS/OneDrive/Documentos/NetBeansProjects/talleres__java/src/modelo/Admin.java</file>
+=======
+            <file>file:/C:/Users/USER/OneDrive/Desktop/talleres__java/src/vista/FRMCitas.java</file>
+            <file>file:/C:/Users/USER/OneDrive/Desktop/talleres__java/src/vista/MDIPrincipal.java</file>
+>>>>>>> 12c7575e1a5b1b0827bd1130e9da580ce94e9dd6
         </group>
     </open-files>
 </project-private>

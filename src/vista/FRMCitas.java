@@ -5,6 +5,7 @@ import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -22,7 +23,7 @@ public class FRMCitas extends JInternalFrame {
     private javax.swing.JButton btnGuardar, btnEditar, btnEliminar, btnLimpiar, BTNCerrar;
     private JScrollPane scrollPane;
     private JTable TBLCitas;
-    private SENALogo logoSena;
+    private MBLogo logoTaller;
 
     public FRMCitas() {
         initComponents();
@@ -35,19 +36,20 @@ public class FRMCitas extends JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setSize(760, 480);
+        setSize(780, 500);
         getContentPane().setLayout(null);
         getContentPane().setBackground(DARK_BG);
 
-        logoSena = new SENALogo(24, true);
-        logoSena.setBounds(15, 10, 24, 24);
+        logoTaller = new MBLogo(22, true);
+        logoTaller.setBounds(15, 10, 22, 22);
 
-        lblTitulo = new JLabel("CITAS PROGRAMADAS", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTitulo.setForeground(GOLD);
-        lblTitulo.setBounds(0, 8, 760, 35);
+        JPanel header = crearHeaderBar("CITAS PROGRAMADAS", logoTaller, 780);
+        getContentPane().add(header);
 
-        int lblW = 80, txtW = 210, row1Y = 55, row2Y = 95, lblX1 = 25, txtX1 = 105, lblX2 = 345, txtX2 = 425;
+        JPanel panelForm = crearPanelCard(15, 50, 750, 110);
+        panelForm.setLayout(null);
+
+        int lblW = 80, txtW = 210, row1Y = 12, row2Y = 55, lblX1 = 15, txtX1 = 95, lblX2 = 340, txtX2 = 420;
 
         lblCliente = crearLabel("Cliente:", lblX1, row1Y, lblW);
         txtCliente = crearCampoTexto(txtX1, row1Y, txtW);
@@ -58,52 +60,58 @@ public class FRMCitas extends JInternalFrame {
         txtFecha = crearCampoTexto(txtX1, row2Y, txtW);
         lblEstado = crearLabel("Estado:", lblX2, row2Y, lblW);
         cmbEstado = new JComboBox<>(new String[]{"Pendiente", "En proceso", "Completada", "Cancelada"});
-        cmbEstado.setBounds(txtX2, row2Y, 210, 28);
+        cmbEstado.setBounds(txtX2, row2Y, 210, 30);
         cmbEstado.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        cmbEstado.setBackground(new Color(50, 50, 50));
+        cmbEstado.setBackground(DARK_INPUT);
         cmbEstado.setForeground(Color.WHITE);
 
-        int btnY = 140, btnW = 105, btnH = 32;
-        btnGuardar = crearBotonRedondeado("GUARDAR", SENA_GREEN, 25, btnY, btnW, btnH);
-        btnEditar = crearBotonRedondeado("EDITAR", GOLD_DARK, 140, btnY, btnW, btnH);
-        btnEliminar = crearBotonRedondeado("ELIMINAR", new Color(200, 50, 50), 255, btnY, btnW, btnH);
-        btnLimpiar = crearBotonRedondeado("LIMPIAR", new Color(100, 100, 100), 370, btnY, btnW, btnH);
-        BTNCerrar = crearBotonRedondeado("CERRAR", new Color(70, 70, 70), 630, btnY, btnW, btnH);
+        panelForm.add(lblCliente); panelForm.add(txtCliente);
+        panelForm.add(lblMoto); panelForm.add(txtMoto);
+        panelForm.add(lblFecha); panelForm.add(txtFecha);
+        panelForm.add(lblEstado); panelForm.add(cmbEstado);
+        getContentPane().add(panelForm);
+
+        JPanel panelBotones = crearPanelCard(15, 168, 750, 50);
+        panelBotones.setLayout(null);
+
+        int btnY = 9, btnW = 105, btnH = 32;
+        btnGuardar = crearBotonRedondeado("GUARDAR", RED_PRIMARY, 15, btnY, btnW, btnH);
+        btnEditar = crearBotonRedondeado("EDITAR", RED_DARK, 130, btnY, btnW, btnH);
+        btnEliminar = crearBotonRedondeado("ELIMINAR", new Color(180, 15, 15), 245, btnY, btnW, btnH);
+        btnLimpiar = crearBotonRedondeado("LIMPIAR", new Color(70, 70, 70), 360, btnY, btnW, btnH);
+        BTNCerrar = crearBotonRedondeado("CERRAR", new Color(45, 45, 45), 630, btnY, btnW, btnH);
         BTNCerrar.addActionListener(e -> dispose());
         btnLimpiar.addActionListener(e -> limpiarCampos());
 
+        panelBotones.add(btnGuardar); panelBotones.add(btnEditar);
+        panelBotones.add(btnEliminar); panelBotones.add(btnLimpiar);
+        panelBotones.add(BTNCerrar);
+        getContentPane().add(panelBotones);
+
         TBLCitas = new JTable();
         TBLCitas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        TBLCitas.setRowHeight(30);
-        TBLCitas.setBackground(new Color(42, 42, 42));
+        TBLCitas.setRowHeight(32);
+        TBLCitas.setBackground(DARK_BG);
         TBLCitas.setForeground(Color.WHITE);
-        TBLCitas.setGridColor(new Color(70, 70, 70));
-        TBLCitas.setSelectionBackground(new Color(57, 169, 0, 180));
+        TBLCitas.setGridColor(TABLE_GRID);
+        TBLCitas.setSelectionBackground(TABLE_SELECTION);
         TBLCitas.setSelectionForeground(Color.WHITE);
 
-        JTableHeader header = TBLCitas.getTableHeader();
-        header.setBackground(GOLD);
-        header.setForeground(Color.BLACK);
-        header.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        JTableHeader headerTable = TBLCitas.getTableHeader();
+        headerTable.setBackground(TABLE_HEADER_BG);
+        headerTable.setForeground(TABLE_HEADER_FG);
+        headerTable.setFont(new Font("Segoe UI", Font.BOLD, 13));
 
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         center.setHorizontalAlignment(SwingConstants.CENTER);
         TBLCitas.setDefaultRenderer(Object.class, center);
 
         scrollPane = new JScrollPane(TBLCitas);
-        scrollPane.setBounds(20, 185, 720, 255);
-        scrollPane.getViewport().setBackground(new Color(42, 42, 42));
+        scrollPane.setBounds(15, 228, 750, 240);
+        scrollPane.getViewport().setBackground(DARK_BG);
         scrollPane.getViewport().setOpaque(true);
+        scrollPane.setBorder(null);
 
-        getContentPane().add(logoSena);
-        getContentPane().add(lblTitulo);
-        getContentPane().add(lblCliente); getContentPane().add(txtCliente);
-        getContentPane().add(lblMoto); getContentPane().add(txtMoto);
-        getContentPane().add(lblFecha); getContentPane().add(txtFecha);
-        getContentPane().add(lblEstado); getContentPane().add(cmbEstado);
-        getContentPane().add(btnGuardar); getContentPane().add(btnEditar);
-        getContentPane().add(btnEliminar); getContentPane().add(btnLimpiar);
-        getContentPane().add(BTNCerrar);
         getContentPane().add(scrollPane);
     }
 
