@@ -18,13 +18,14 @@ public class frmDashboard extends JInternalFrame {
 
     private JLabel lblTitulo, lblSubtitulo, lblSlogan, lblInfo;
     private JButton btnClientes, btnMotos, btnTrabajadores, btnCitas;
-    private SENALogo logo;
+    private MBLogo logo;
     private JPanel panelHero;
     private MDIPrincipal padre;
 
-    private static final Color SENA_GREEN = new Color(57, 169, 0);
-    private static final Color DARK_CARD = new Color(38, 38, 38);
-    private static final Color GOLD = new Color(255, 215, 0);
+    private static final Color RED_PRIMARY = new Color(211, 30, 30);
+    private static final Color RED_DARK = new Color(160, 18, 18);
+    private static final Color RED_BRIGHT = new Color(255, 40, 40);
+    private static final Color DARK_CARD = new Color(16, 16, 16);
 
     public frmDashboard(MDIPrincipal padre) {
         this.padre = padre;
@@ -38,93 +39,139 @@ public class frmDashboard extends JInternalFrame {
         setIconifiable(true);
         setMaximizable(false);
         setResizable(false);
-        setSize(680, 520);
+        setSize(700, 540);
         getContentPane().setLayout(null);
-        getContentPane().setBackground(new Color(20, 20, 20));
+        getContentPane().setBackground(new Color(8, 8, 8));
 
         panelHero = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(0, 0, new Color(30, 30, 30), 0, getHeight(), new Color(15, 15, 15));
+                GradientPaint gp = new GradientPaint(0, 0, new Color(14, 14, 14), 0, getHeight(), new Color(8, 8, 8));
                 g2.setPaint(gp);
                 g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.setColor(new Color(57, 169, 0, 30));
-                g2.fillOval(-50, -80, 300, 300);
-                g2.setColor(new Color(255, 215, 0, 15));
-                g2.fillOval(400, -100, 350, 350);
+                g2.setColor(new Color(211, 30, 30, 25));
+                g2.fillOval(-40, -60, 280, 280);
+                g2.setColor(new Color(255, 40, 40, 12));
+                g2.fillOval(420, -80, 300, 300);
                 g2.dispose();
             }
         };
-        panelHero.setBounds(0, 0, 680, 200);
+        panelHero.setBounds(0, 0, 700, 200);
         panelHero.setLayout(null);
         panelHero.setOpaque(false);
 
-        logo = new SENALogo(80, true);
-        logo.setBounds(300, 15, 80, 80);
+        logo = new MBLogo(85, true);
+        logo.setBounds(307, 12, 85, 85);
 
         lblTitulo = new JLabel("MULTIMARCAS BRAZO", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 38));
-        lblTitulo.setForeground(GOLD);
-        lblTitulo.setBounds(40, 95, 600, 50);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        lblTitulo.setForeground(RED_BRIGHT);
+        lblTitulo.setBounds(50, 95, 600, 50);
 
         lblSubtitulo = new JLabel("TALLER DE MOTOS", SwingConstants.CENTER);
-        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        lblSubtitulo.setForeground(new Color(180, 180, 180));
-        lblSubtitulo.setBounds(150, 140, 380, 25);
-
-        lblSlogan = new JLabel("SENA - Conocimiento para todos", SwingConstants.CENTER);
-        lblSlogan.setFont(new Font("Segoe UI", Font.ITALIC, 13));
-        lblSlogan.setForeground(SENA_GREEN);
-        lblSlogan.setBounds(150, 165, 380, 20);
+        lblSubtitulo.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        lblSubtitulo.setForeground(new Color(200, 200, 200));
+        lblSubtitulo.setBounds(150, 138, 400, 25);
 
         JPanel panelSlogan = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(57, 169, 0, 40));
+                g2.setColor(new Color(211, 30, 30, 35));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.setColor(new Color(211, 30, 30, 60));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);
                 g2.dispose();
             }
         };
-        panelSlogan.setBounds(170, 193, 340, 30);
+        panelSlogan.setBounds(125, 168, 450, 28);
 
-        lblInfo = new JLabel("Gestión integral para su taller", SwingConstants.CENTER);
+        lblSlogan = new JLabel("Potencia, Pasion y Precision sobre dos ruedas", SwingConstants.CENTER);
+        lblSlogan.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        lblSlogan.setForeground(RED_PRIMARY);
+        lblSlogan.setBounds(0, 2, 450, 24);
+
+        lblInfo = new JLabel("Gestion integral para su taller de motos", SwingConstants.CENTER);
         lblInfo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        lblInfo.setForeground(new Color(140, 140, 140));
-        lblInfo.setBounds(100, 225, 480, 25);
+        lblInfo.setForeground(new Color(130, 130, 130));
+        lblInfo.setBounds(100, 210, 500, 25);
 
-        btnClientes = crearBotonTarjeta("CLIENTES", "\uD83D\uDC65", "Registre y gestione", 40, 270);
+        btnClientes = crearBotonTarjeta("CLIENTES", "\uD83D\uDC65", "Registre y gestione", 30, 260);
         btnClientes.addActionListener(e -> abrirFormulario(new FRMClientes()));
 
-        btnMotos = crearBotonTarjeta("MOTOS", "\uD83C\uDFCD", "Inventario de motos", 175, 270);
+        btnMotos = crearBotonTarjeta("MOTOS", "\uD83C\uDFCD", "Inventario de motos", 190, 260);
         btnMotos.addActionListener(e -> abrirFormulario(new FRMMotos()));
 
-        btnTrabajadores = crearBotonTarjeta("TRABAJADORES", "\uD83D\uDD27", "Gestión del personal", 310, 270);
+        btnTrabajadores = crearBotonTarjeta("TALLER", "\uD83D\uDD27", "Gestion del personal", 350, 260);
         btnTrabajadores.addActionListener(e -> abrirFormulario(new FRMTrabajadores()));
 
-        btnCitas = crearBotonTarjeta("CITAS", "\uD83D\uDCC5", "Programación de citas", 445, 270);
+        btnCitas = crearBotonTarjeta("CITAS", "\uD83D\uDCC5", "Programacion de citas", 510, 260);
         btnCitas.addActionListener(e -> abrirFormulario(new FRMCitas()));
 
-        JLabel lblFooter = new JLabel("Tecnólogo en Análisis y Desarrollo de Software — GFPI-F-135", SwingConstants.CENTER);
+        JPanel panelStats = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(14, 14, 14));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+                g2.setColor(new Color(40, 40, 40));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
+                g2.dispose();
+            }
+        };
+        panelStats.setBounds(30, 410, 640, 90);
+        panelStats.setLayout(null);
+        panelStats.setOpaque(false);
+
+        JLabel lblFooter = new JLabel("Multimarcas Brazo - Taller de Motos", SwingConstants.CENTER);
         lblFooter.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        lblFooter.setForeground(new Color(80, 80, 80));
-        lblFooter.setBounds(50, 480, 580, 20);
+        lblFooter.setForeground(new Color(70, 70, 70));
+        lblFooter.setBounds(100, 510, 500, 20);
+
+        int statW = 160;
+        crearStatLabel(panelStats, "Motos", "En taller", 15, 15, statW);
+        crearStatLabel(panelStats, "Clientes", "Registrados", 15 + statW + 5, 15, statW);
+        crearStatLabel(panelStats, "Mecanicos", "Disponibles", 15 + (statW + 5) * 2, 15, statW);
+        crearStatLabel(panelStats, "Citas", "Hoy", 15 + (statW + 5) * 3, 15, statW);
 
         panelHero.add(logo);
         panelHero.add(lblTitulo);
         panelHero.add(lblSubtitulo);
-        panelHero.add(lblSlogan);
         getContentPane().add(panelHero);
         getContentPane().add(panelSlogan);
+        panelSlogan.add(lblSlogan);
         getContentPane().add(lblInfo);
         getContentPane().add(btnClientes);
         getContentPane().add(btnMotos);
         getContentPane().add(btnTrabajadores);
         getContentPane().add(btnCitas);
+        getContentPane().add(panelStats);
         getContentPane().add(lblFooter);
+    }
+
+    private void crearStatLabel(JPanel panel, String titulo, String subtitulo, int x, int y, int w) {
+        JLabel val = new JLabel("--", SwingConstants.CENTER);
+        val.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        val.setForeground(RED_BRIGHT);
+        val.setBounds(x, y, w, 30);
+
+        JLabel lbl = new JLabel(titulo, SwingConstants.CENTER);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        lbl.setForeground(new Color(180, 180, 180));
+        lbl.setBounds(x, y + 28, w, 18);
+
+        JLabel sub = new JLabel(subtitulo, SwingConstants.CENTER);
+        sub.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        sub.setForeground(new Color(100, 100, 100));
+        sub.setBounds(x, y + 44, w, 15);
+
+        panel.add(val);
+        panel.add(lbl);
+        panel.add(sub);
     }
 
     private JButton crearBotonTarjeta(String titulo, String icono, String desc, int x, int y) {
@@ -135,23 +182,23 @@ public class frmDashboard extends JInternalFrame {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 if (getModel().isRollover()) {
-                    g2.setColor(new Color(57, 169, 0));
-                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.15f));
+                    g2.setColor(RED_PRIMARY);
+                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.12f));
                     g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
                     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-                    g2.setColor(new Color(57, 169, 0));
+                    g2.setColor(RED_PRIMARY);
                     g2.setStroke(new java.awt.BasicStroke(2f));
                     g2.drawRoundRect(1, 1, getWidth() - 2, getHeight() - 2, 15, 15);
                 }
-                g2.setColor(new Color(38, 38, 38));
+                g2.setColor(DARK_CARD);
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-                g2.setColor(new Color(60, 60, 60));
+                g2.setColor(new Color(50, 50, 50));
                 g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 15, 15);
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
-        btn.setBounds(x, y, 165, 130);
+        btn.setBounds(x, y, 145, 120);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
@@ -160,24 +207,21 @@ public class frmDashboard extends JInternalFrame {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setVerticalAlignment(SwingConstants.CENTER);
-        btn.setText("<html><center><span style='font-size:32px'>" + icono + "</span><br><span style='font-size:13px; color:#FFD700;'>" + titulo + "</span><br><span style='font-size:11px; color:#999;'>" + desc + "</span></center></html>");
+        btn.setText("<html><center><span style='font-size:30px'>" + icono + "</span><br><span style='font-size:13px; color:#FF2828;'>" + titulo + "</span><br><span style='font-size:11px; color:#999;'>" + desc + "</span></center></html>");
         return btn;
     }
 
     private void abrirFormulario(javax.swing.JInternalFrame form) {
-        form.setLocation(130, 60);
-        padre.getContentPane().add(form);
+        form.setLocation(60, 60);
+        padre.getEscritorio().add(form);
         form.setVisible(true);
-        try {
-            form.setSelected(true);
-        } catch (Exception ex) {
-        }
+        try { form.setSelected(true); } catch (Exception ex) {}
     }
 
     private void centrar(MDIPrincipal padre) {
-        setLocation(
-            (padre.getWidth() - getWidth()) / 2,
-            (padre.getHeight() - getHeight()) / 2
-        );
+        int sidebarW = padre.getSidebarWidth();
+        int x = (padre.getWidth() - sidebarW - getWidth()) / 2;
+        int y = (padre.getHeight() - getHeight()) / 2;
+        setLocation(Math.max(x, 10), Math.max(y, 10));
     }
 }

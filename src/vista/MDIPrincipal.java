@@ -2,6 +2,8 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -9,28 +11,29 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.Date;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
 
 public class MDIPrincipal extends JFrame {
 
     private JDesktopPane escritorio;
-    private JMenuBar menuBar;
-    private JMenu MNUAdministrar, MNUSena;
-    private JMenuItem ItemClientes, ItemMotos, ItemTrabajadores, ItemCitas, ItemSalir, ItemAcercaDe;
-    private JLabel lblStatus, lblStatusSena;
+    private JPanel sidebar;
+    private JButton btnClientes, btnMotos, btnTrabajadores, btnCitas, btnDashboard;
+    private JLabel lblStatus;
     private frmDashboard dashboard;
-    private SENALogo iconoApp;
+    private MBLogo iconoApp;
 
-    private static final Color SENA_GREEN = new Color(57, 169, 0);
-    private static final Color DARK_BG = new Color(22, 22, 22);
+    private static final Color RED_PRIMARY = new Color(211, 30, 30);
+    private static final Color RED_DARK = new Color(160, 18, 18);
+    private static final Color SIDEBAR_BG = new Color(10, 10, 10);
 
     public MDIPrincipal() {
         initComponents();
@@ -39,146 +42,186 @@ public class MDIPrincipal extends JFrame {
     }
 
     private void initComponents() {
-        setTitle("Multimarcas Brazo - Taller de Motos [SENA]");
+        setTitle("Multimarcas Brazo - Taller de Motos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 650);
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        iconoApp = new SENALogo(32, true);
-        iconoApp.setPreferredSize(new java.awt.Dimension(32, 32));
-        setIconImage(crearIconoVentana());
+        iconoApp = new MBLogo(28, true);
+        iconoApp.setPreferredSize(new Dimension(28, 28));
+
+        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(28, 28, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = img.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(RED_PRIMARY);
+        g2.fillOval(2, 2, 24, 24);
+        g2.setColor(Color.WHITE);
+        g2.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        g2.drawString("MB", 4, 19);
+        g2.dispose();
+        setIconImage(img);
 
         escritorio = new JDesktopPane() {
             @Override
             protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(DARK_BG);
-                g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.setColor(new Color(57, 169, 0, 12));
-                g2.fillOval(-200, -100, 600, 600);
-                g2.setColor(new Color(255, 215, 0, 8));
-                g2.fillOval(getWidth() - 400, getHeight() - 400, 500, 500);
-                g2.dispose();
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setColor(new Color(8, 8, 8));
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                g2d.setColor(new Color(211, 30, 30, 10));
+                g2d.fillOval(-150, -80, 500, 500);
+                g2d.setColor(new Color(180, 18, 18, 8));
+                g2d.fillOval(getWidth() - 350, getHeight() - 350, 400, 400);
+                g2d.setColor(new Color(160, 18, 18, 6));
+                g2d.fillOval(getWidth() / 2 - 100, getHeight() / 2 - 200, 300, 300);
+                g2d.dispose();
             }
         };
-        setContentPane(escritorio);
 
-        menuBar = new JMenuBar() {
+        sidebar = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(0, 0, SENA_GREEN, getWidth(), 0, new Color(40, 130, 0));
-                g2.setPaint(gp);
-                g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.dispose();
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                GradientPaint gp = new GradientPaint(0, 0, SIDEBAR_BG, getWidth(), 0, new Color(16, 16, 16));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                g2d.setColor(RED_PRIMARY);
+                g2d.fillRect(getWidth() - 2, 0, 2, getHeight());
+                g2d.dispose();
             }
         };
-        menuBar.setBorderPainted(false);
+        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
+        sidebar.setBorder(new EmptyBorder(0, 0, 10, 0));
+        sidebar.setPreferredSize(new Dimension(170, 0));
 
-        MNUAdministrar = new JMenu("Administrar");
-        MNUAdministrar.setForeground(Color.WHITE);
-        MNUAdministrar.setFont(MNUAdministrar.getFont().deriveFont(14f));
-        MNUAdministrar.setMnemonic('A');
+        MBLogo logoGrande = new MBLogo(50, true);
+        logoGrande.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        logoGrande.setBorder(new EmptyBorder(15, 0, 5, 0));
 
-        ItemClientes = new JMenuItem("Clientes");
-        ItemClientes.setFont(ItemClientes.getFont().deriveFont(13f));
-        ItemClientes.setMnemonic('C');
-        ItemClientes.addActionListener(e -> abrirVentana(new FRMClientes(), 50, 50));
+        JLabel lblNombre = new JLabel("Multimarcas", SwingConstants.CENTER);
+        lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblNombre.setForeground(new Color(220, 220, 220));
+        lblNombre.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 
-        ItemMotos = new JMenuItem("Motos");
-        ItemMotos.setFont(ItemMotos.getFont().deriveFont(13f));
-        ItemMotos.setMnemonic('M');
-        ItemMotos.addActionListener(e -> abrirVentana(new FRMMotos(), 70, 70));
+        JLabel lblTipo = new JLabel("TALLER DE MOTOS", SwingConstants.CENTER);
+        lblTipo.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblTipo.setForeground(RED_PRIMARY);
+        lblTipo.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 
-        ItemTrabajadores = new JMenuItem("Trabajadores");
-        ItemTrabajadores.setFont(ItemTrabajadores.getFont().deriveFont(13f));
-        ItemTrabajadores.setMnemonic('T');
-        ItemTrabajadores.addActionListener(e -> abrirVentana(new FRMTrabajadores(), 90, 90));
+        sidebar.add(logoGrande);
+        sidebar.add(lblNombre);
+        sidebar.add(lblTipo);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        ItemCitas = new JMenuItem("Citas");
-        ItemCitas.setFont(ItemCitas.getFont().deriveFont(13f));
-        ItemCitas.setMnemonic('i');
-        ItemCitas.addActionListener(e -> abrirVentana(new FRMCitas(), 110, 110));
+        btnDashboard = crearBotonSidebar("\u2302  Panel Principal");
+        btnDashboard.addActionListener(e -> abrirDashboard());
+        btnMotos = crearBotonSidebar(" Motos");
+        btnMotos.addActionListener(e -> abrirVentana(new FRMMotos(), 60, 60));
+        btnClientes = crearBotonSidebar(" Clientes");
+        btnClientes.addActionListener(e -> abrirVentana(new FRMClientes(), 60, 60));
+        btnTrabajadores = crearBotonSidebar(" Trabajadores");
+        btnTrabajadores.addActionListener(e -> abrirVentana(new FRMTrabajadores(), 60, 60));
+        btnCitas = crearBotonSidebar(" Citas");
+        btnCitas.addActionListener(e -> abrirVentana(new FRMCitas(), 60, 60));
 
-        ItemSalir = new JMenuItem("Salir");
-        ItemSalir.setFont(ItemSalir.getFont().deriveFont(13f));
-        ItemSalir.setMnemonic('S');
-        ItemSalir.addActionListener(e -> System.exit(0));
+        sidebar.add(btnDashboard);
+        sidebar.add(btnMotos);
+        sidebar.add(btnClientes);
+        sidebar.add(btnTrabajadores);
+        sidebar.add(btnCitas);
 
-        MNUAdministrar.add(ItemClientes);
-        MNUAdministrar.add(ItemMotos);
-        MNUAdministrar.add(ItemTrabajadores);
-        MNUAdministrar.add(ItemCitas);
-        MNUAdministrar.addSeparator();
-        MNUAdministrar.add(ItemSalir);
+        sidebar.add(Box.createVerticalGlue());
 
-        MNUSena = new JMenu("SENA");
-        MNUSena.setForeground(Color.WHITE);
-        MNUSena.setFont(MNUSena.getFont().deriveFont(14f));
-        MNUSena.setMnemonic('S');
-
-        ItemAcercaDe = new JMenuItem("Acerca del Taller");
-        ItemAcercaDe.setFont(ItemAcercaDe.getFont().deriveFont(13f));
-        ItemAcercaDe.addActionListener(e -> mostrarAcercaDe());
-
-        MNUSena.add(ItemAcercaDe);
-
-        menuBar.add(MNUAdministrar);
-        menuBar.add(MNUSena);
-
-        setJMenuBar(menuBar);
+        JButton btnSalir = new JButton("Salir");
+        btnSalir.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnSalir.setForeground(new Color(120, 120, 120));
+        btnSalir.setFocusPainted(false);
+        btnSalir.setBorderPainted(false);
+        btnSalir.setContentAreaFilled(false);
+        btnSalir.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSalir.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        btnSalir.addActionListener(e -> System.exit(0));
+        sidebar.add(btnSalir);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
 
         JPanel statusBar = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(0, 0, new Color(35, 35, 35), 0, getHeight(), new Color(20, 20, 20));
-                g2.setPaint(gp);
-                g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.setColor(new Color(57, 169, 0, 80));
-                g2.fillRect(0, 0, getWidth(), 1);
-                g2.dispose();
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                GradientPaint gp = new GradientPaint(0, 0, new Color(16, 16, 16), 0, getHeight(), new Color(8, 8, 8));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                g2d.setColor(new Color(211, 30, 30, 70));
+                g2d.fillRect(0, 0, getWidth(), 1);
+                g2d.dispose();
             }
         };
-        statusBar.setPreferredSize(new java.awt.Dimension(0, 28));
+        statusBar.setPreferredSize(new Dimension(0, 26));
+
+        MBLogo logoMini = new MBLogo(14, true);
+        logoMini.setPreferredSize(new Dimension(18, 18));
+
+        JLabel lblMarca = new JLabel("  Multimarcas Brazo");
+        lblMarca.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        lblMarca.setForeground(RED_PRIMARY);
 
         JPanel statusLeft = new JPanel(new BorderLayout());
         statusLeft.setOpaque(false);
-        SENALogo logoMini = new SENALogo(16, true);
-        logoMini.setPreferredSize(new java.awt.Dimension(20, 20));
-        lblStatusSena = new JLabel("  SENA - Conocimiento para todos");
-        lblStatusSena.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblStatusSena.setForeground(SENA_GREEN);
         statusLeft.add(logoMini, BorderLayout.WEST);
-        statusLeft.add(lblStatusSena, BorderLayout.CENTER);
+        statusLeft.add(lblMarca, BorderLayout.CENTER);
 
         lblStatus = new JLabel("", SwingConstants.RIGHT);
         lblStatus.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        lblStatus.setForeground(new Color(160, 160, 160));
-        lblStatus.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 0, 3, 12));
+        lblStatus.setForeground(new Color(140, 140, 140));
+        lblStatus.setBorder(new EmptyBorder(3, 0, 3, 12));
 
         statusBar.add(statusLeft, BorderLayout.WEST);
         statusBar.add(lblStatus, BorderLayout.EAST);
 
-        escritorio.add(statusBar, BorderLayout.SOUTH);
-        statusBar.setBounds(0, 0, getWidth(), 28);
+        JPanel contenedor = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                g.setColor(new Color(8, 8, 8));
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        contenedor.setOpaque(false);
+        contenedor.add(sidebar, BorderLayout.WEST);
+        contenedor.add(escritorio, BorderLayout.CENTER);
+        contenedor.add(statusBar, BorderLayout.SOUTH);
+        setContentPane(contenedor);
     }
 
-    private java.awt.Image crearIconoVentana() {
-        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(32, 32, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = img.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(SENA_GREEN);
-        g2.fillOval(2, 2, 28, 28);
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        g2.drawString("S", 11, 22);
-        g2.dispose();
-        return img;
+    private JButton crearBotonSidebar(String texto) {
+        JButton btn = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                if (getModel().isRollover()) {
+                    g2d.setColor(new Color(30, 30, 30));
+                    g2d.fillRect(0, 0, getWidth(), getHeight());
+                    g2d.setColor(RED_PRIMARY);
+                    g2d.fillRect(0, 0, 3, getHeight());
+                }
+                g2d.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btn.setForeground(new Color(180, 180, 180));
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.setBorder(new EmptyBorder(10, 18, 10, 10));
+        btn.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        btn.setMaximumSize(new Dimension(170, 40));
+        btn.setMinimumSize(new Dimension(170, 40));
+        return btn;
     }
 
     private void iniciarReloj() {
@@ -188,35 +231,30 @@ public class MDIPrincipal extends JFrame {
         timer.start();
     }
 
-    private void mostrarAcercaDe() {
-        javax.swing.JOptionPane.showMessageDialog(this,
-            "MULTIMARCAS BRAZO - Taller de Motos\n" +
-            "Proyecto de Formación SENA\n" +
-            "Versión 1.0\n\n" +
-            "Tecnólogo en Análisis y Desarrollo de Software\n" +
-            "Ficha: GFPI-F-135",
-            "Acerca del Taller",
-            javax.swing.JOptionPane.INFORMATION_MESSAGE);
-    }
-
     private void abrirDashboard() {
-        dashboard = new frmDashboard(this);
-        dashboard.setVisible(true);
-        escritorio.add(dashboard);
-        try {
-            dashboard.setSelected(true);
-        } catch (Exception ex) {
+        if (dashboard == null || dashboard.isClosed()) {
+            dashboard = new frmDashboard(this);
+            dashboard.setVisible(true);
+            escritorio.add(dashboard);
+        } else {
+            dashboard.toFront();
         }
+        try { dashboard.setSelected(true); } catch (Exception ex) {}
     }
 
     private void abrirVentana(javax.swing.JInternalFrame ventana, int offsetX, int offsetY) {
         ventana.setLocation(offsetX, offsetY);
         escritorio.add(ventana);
         ventana.setVisible(true);
-        try {
-            ventana.setSelected(true);
-        } catch (Exception ex) {
-        }
+        try { ventana.setSelected(true); } catch (Exception ex) {}
+    }
+
+    public JDesktopPane getEscritorio() {
+        return escritorio;
+    }
+
+    public int getSidebarWidth() {
+        return 170;
     }
 
     public static void main(String[] args) {
