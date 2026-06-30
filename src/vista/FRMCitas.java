@@ -1,33 +1,35 @@
 package vista;
 
+import controlador.CitaController;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import static vista.UIUtil.*;
 
 public class FRMCitas extends JInternalFrame {
 
-    private JLabel lblTitulo, lblCliente, lblMoto, lblFecha, lblEstado;
     private JTextField txtCliente, txtMoto, txtFecha;
     private JComboBox<String> cmbEstado;
     private javax.swing.JButton btnGuardar, btnEditar, btnEliminar, btnLimpiar, BTNCerrar;
     private JScrollPane scrollPane;
     private JTable TBLCitas;
     private MBLogo logoTaller;
+    private JPanel header, panelForm, panelBotones;
+    private CitaController controller;
+    private int idSeleccionado = -1;
 
     public FRMCitas() {
+        controller = new CitaController();
         initComponents();
-        cargarDatos();
+        new Thread(() -> { try { cargarDatos(); } catch (Exception e) {} }).start();
     }
 
     private void initComponents() {
@@ -36,94 +38,184 @@ public class FRMCitas extends JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setSize(780, 500);
+        setSize(800, 600);
         getContentPane().setLayout(null);
-        getContentPane().setBackground(DARK_BG);
+        getContentPane().setBackground(LIGHT_BG);
 
-        logoTaller = new MBLogo(22, true);
-        logoTaller.setBounds(15, 10, 22, 22);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                reorganizar();
+            }
+        });
 
-        JPanel header = crearHeaderBar("CITAS PROGRAMADAS", logoTaller, 780);
-        getContentPane().add(header);
+        logoTaller = new MBLogo(22);
 
-        JPanel panelForm = crearPanelCard(15, 50, 750, 110);
+        header = crearHeaderBar("CITAS PROGRAMADAS", logoTaller, 100);
+
+        panelForm = crearPanelCard(15, 50, 1, 110);
         panelForm.setLayout(null);
 
         int lblW = 80, txtW = 210, row1Y = 12, row2Y = 55, lblX1 = 15, txtX1 = 95, lblX2 = 340, txtX2 = 420;
 
-        lblCliente = crearLabel("Cliente:", lblX1, row1Y, lblW);
+        JLabel lblCliente = crearLabel("Cliente:", lblX1, row1Y, lblW);
         txtCliente = crearCampoTexto(txtX1, row1Y, txtW);
-        lblMoto = crearLabel("Moto:", lblX2, row1Y, lblW);
+        JLabel lblMoto = crearLabel("Moto:", lblX2, row1Y, lblW);
         txtMoto = crearCampoTexto(txtX2, row1Y, txtW);
 
-        lblFecha = crearLabel("Fecha:", lblX1, row2Y, lblW);
+        JLabel lblFecha = crearLabel("Fecha:", lblX1, row2Y, lblW);
         txtFecha = crearCampoTexto(txtX1, row2Y, txtW);
-        lblEstado = crearLabel("Estado:", lblX2, row2Y, lblW);
+        JLabel lblEstado = crearLabel("Estado:", lblX2, row2Y, lblW);
         cmbEstado = new JComboBox<>(new String[]{"Pendiente", "En proceso", "Completada", "Cancelada"});
         cmbEstado.setBounds(txtX2, row2Y, 210, 30);
-        cmbEstado.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        cmbEstado.setBackground(DARK_INPUT);
-        cmbEstado.setForeground(Color.WHITE);
+        cmbEstado.setFont(FONT_INPUT);
+        cmbEstado.setBackground(Color.WHITE);
+        cmbEstado.setForeground(TEXT_DARK);
 
         panelForm.add(lblCliente); panelForm.add(txtCliente);
         panelForm.add(lblMoto); panelForm.add(txtMoto);
         panelForm.add(lblFecha); panelForm.add(txtFecha);
         panelForm.add(lblEstado); panelForm.add(cmbEstado);
-        getContentPane().add(panelForm);
 
-        JPanel panelBotones = crearPanelCard(15, 168, 750, 50);
+        panelBotones = crearPanelCard(15, 168, 1, 50);
         panelBotones.setLayout(null);
 
-        int btnY = 9, btnW = 105, btnH = 32;
-        btnGuardar = crearBotonRedondeado("GUARDAR", RED_PRIMARY, 15, btnY, btnW, btnH);
-        btnEditar = crearBotonRedondeado("EDITAR", RED_DARK, 130, btnY, btnW, btnH);
-        btnEliminar = crearBotonRedondeado("ELIMINAR", new Color(180, 15, 15), 245, btnY, btnW, btnH);
-        btnLimpiar = crearBotonRedondeado("LIMPIAR", new Color(70, 70, 70), 360, btnY, btnW, btnH);
-        BTNCerrar = crearBotonRedondeado("CERRAR", new Color(45, 45, 45), 630, btnY, btnW, btnH);
-        BTNCerrar.addActionListener(e -> dispose());
+        int btnY = 9;
+        btnGuardar = crearBotonPrimario("GUARDAR", 15, btnY);
+        btnGuardar.addActionListener(e -> guardarCita());
+        btnEditar = crearBotonSecundario("EDITAR", 130, btnY);
+        btnEditar.addActionListener(e -> editarCita());
+        btnEliminar = crearBotonDestructivo("ELIMINAR", 245, btnY);
+        btnEliminar.addActionListener(e -> eliminarCita());
+        btnLimpiar = crearBotonSecundario("LIMPIAR", 360, btnY);
         btnLimpiar.addActionListener(e -> limpiarCampos());
+        BTNCerrar = crearBotonNeutral("CERRAR", 630, btnY);
+        BTNCerrar.addActionListener(e -> dispose());
 
         panelBotones.add(btnGuardar); panelBotones.add(btnEditar);
         panelBotones.add(btnEliminar); panelBotones.add(btnLimpiar);
         panelBotones.add(BTNCerrar);
-        getContentPane().add(panelBotones);
 
         TBLCitas = new JTable();
-        TBLCitas.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        TBLCitas.setRowHeight(32);
-        TBLCitas.setBackground(DARK_BG);
-        TBLCitas.setForeground(Color.WHITE);
-        TBLCitas.setGridColor(TABLE_GRID);
-        TBLCitas.setSelectionBackground(TABLE_SELECTION);
-        TBLCitas.setSelectionForeground(Color.WHITE);
-
-        JTableHeader headerTable = TBLCitas.getTableHeader();
-        headerTable.setBackground(TABLE_HEADER_BG);
-        headerTable.setForeground(TABLE_HEADER_FG);
-        headerTable.setFont(new Font("Segoe UI", Font.BOLD, 13));
-
-        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
-        center.setHorizontalAlignment(SwingConstants.CENTER);
-        TBLCitas.setDefaultRenderer(Object.class, center);
+        configurarTabla(TBLCitas);
+        TBLCitas.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) seleccionarFila();
+        });
 
         scrollPane = new JScrollPane(TBLCitas);
-        scrollPane.setBounds(15, 228, 750, 240);
-        scrollPane.getViewport().setBackground(DARK_BG);
+        scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.getViewport().setOpaque(true);
         scrollPane.setBorder(null);
 
+        getContentPane().add(header);
+        getContentPane().add(panelForm);
+        getContentPane().add(panelBotones);
         getContentPane().add(scrollPane);
+    }
+
+    private void reorganizar() {
+        int w = getContentPane().getWidth();
+        int h = getContentPane().getHeight();
+        if (w < 100) return;
+
+        logoTaller.setBounds(15, 10, 22, 22);
+        header.setBounds(0, 0, w, 44);
+
+        panelForm.setBounds(15, 50, w - 30, 110);
+
+        panelBotones.setBounds(15, 168, w - 30, 50);
+
+        int scrollY = 228;
+        scrollPane.setBounds(15, scrollY, w - 30, h - scrollY - 15);
+    }
+
+    private void guardarCita() {
+        if (txtCliente.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El cliente es obligatorio");
+            return;
+        }
+        modelo.Cita c = new modelo.Cita();
+        c.setCliente(txtCliente.getText().trim());
+        c.setMoto(txtMoto.getText().trim());
+        c.setFecha(txtFecha.getText().trim());
+        c.setEstado(cmbEstado.getSelectedItem().toString());
+        if (controller.guardar(c)) {
+            JOptionPane.showMessageDialog(this, "Cita guardada");
+            limpiarCampos();
+            cargarDatos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al guardar cita");
+        }
+    }
+
+    private void editarCita() {
+        if (idSeleccionado < 0) {
+            JOptionPane.showMessageDialog(this, "Seleccione una cita de la tabla");
+            return;
+        }
+        if (txtCliente.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El cliente es obligatorio");
+            return;
+        }
+        modelo.Cita c = new modelo.Cita();
+        c.setId(idSeleccionado);
+        c.setCliente(txtCliente.getText().trim());
+        c.setMoto(txtMoto.getText().trim());
+        c.setFecha(txtFecha.getText().trim());
+        c.setEstado(cmbEstado.getSelectedItem().toString());
+        if (controller.editar(c)) {
+            JOptionPane.showMessageDialog(this, "Cita actualizada");
+            idSeleccionado = -1;
+            limpiarCampos();
+            cargarDatos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al actualizar");
+        }
+    }
+
+    private void eliminarCita() {
+        if (idSeleccionado < 0) {
+            JOptionPane.showMessageDialog(this, "Seleccione una cita de la tabla");
+            return;
+        }
+        int r = JOptionPane.showConfirmDialog(this, "Eliminar cita seleccionada?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (r == JOptionPane.YES_OPTION) {
+            if (controller.eliminar(idSeleccionado)) {
+                JOptionPane.showMessageDialog(this, "Cita eliminada");
+                idSeleccionado = -1;
+                limpiarCampos();
+                cargarDatos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar");
+            }
+        }
+    }
+
+    private void seleccionarFila() {
+        int fila = TBLCitas.getSelectedRow();
+        if (fila >= 0) {
+            idSeleccionado = Integer.parseInt(TBLCitas.getValueAt(fila, 0).toString());
+            txtCliente.setText(TBLCitas.getValueAt(fila, 1).toString());
+            txtMoto.setText(TBLCitas.getValueAt(fila, 2).toString());
+            txtFecha.setText(TBLCitas.getValueAt(fila, 3).toString());
+            String estado = TBLCitas.getValueAt(fila, 4).toString();
+            for (int i = 0; i < cmbEstado.getItemCount(); i++) {
+                if (cmbEstado.getItemAt(i).equals(estado)) {
+                    cmbEstado.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void limpiarCampos() {
         txtCliente.setText(""); txtMoto.setText("");
         txtFecha.setText(""); cmbEstado.setSelectedIndex(0);
+        idSeleccionado = -1;
+        TBLCitas.clearSelection();
     }
 
     private void cargarDatos() {
-        DefaultTableModel modelo = new DefaultTableModel(
-            new String[]{"ID", "Cliente", "Moto", "Fecha", "Estado"}, 0
-        );
-        TBLCitas.setModel(modelo);
+        controller.cargarTabla(TBLCitas);
     }
 }
